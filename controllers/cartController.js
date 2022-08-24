@@ -1,4 +1,5 @@
 const carts = require("../models/cart");
+const users = require("../models/user");
 
 const getAllCarts = async (req, res) => {
   let allCarts = await carts.getAllCarts();
@@ -20,17 +21,17 @@ const getUserCarts = async (req, res) => {
   res.status(200).send(userCarts);
 };
 
-const getBigCarts = async () => {
+const getBigCarts = async (req, res) => {
   let allCarts = await carts.getAllCarts();
-  allBigCarts = allCarts.map((cart) => {
+  let allBigCarts = allCarts.filter(async (cart) => {
     if (cart.products.length > 2) {
       return {
-        userId: cart.userId,
-        products: cart.products,
+        user: await users.getSingleUser(cart.userId),
+        products: cart.products
       };
     }
   });
-  res.status(200).send(allBigCarts);
+  Promise.all(allBigCarts).then((data) => res.status(200).send(data));
 };
 
 let cartController = {

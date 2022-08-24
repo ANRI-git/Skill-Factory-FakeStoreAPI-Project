@@ -34,10 +34,6 @@ const getExpensiveProducts = async (req, res) => {
     let productsByCategories = await products.getProductsByCategory(category);
     productsByCategories.sort((a, b) => b.price - a.price);
     return productsByCategories[0];
-    // return {
-    //   category: category,
-    //   product: productsByCategories[0],
-    // };
   });
   Promise.all(expensiveProducts).then((data) => res.status(200).send(data));
 };
